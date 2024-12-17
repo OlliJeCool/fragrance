@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tags {
+  name        String     @id
+  Fragrance   Fragrance? @relation(fields: [fragranceId], references: [id])
+  fragranceId String?
+}
+
+model Brand {
+  id          String      @id @default(uuid())
+  name        String
+  description String
+  fragrances  Fragrance[]
+}
+
+model Fragrance {
+  id            String      @id @default(uuid())
+  name          String
+  brand         Brand       @relation(fields: [brandId], references: [id])
+  brandId       String
+  tags          Tags[]
+  scents        String // head:heart:tail/scent,...,scent
+  alternatives  Fragrance[] @relation("Alternatives")
+  alternativeTo Fragrance[] @relation("Alternatives")
+}
